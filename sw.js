@@ -1,6 +1,6 @@
 /* Service Worker — Story Genius Scene Editor
    Estratégia: pré-cache do "app shell" + cache-first com atualização em segundo plano. */
-const CACHE = 'story-genius-v1';
+const CACHE = 'story-genius-v3';
 const ASSETS = [
   './',
   'index.html',
