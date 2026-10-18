@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Story Genius Scene Editor</title>
+  <meta name="description" content="Editor de cenas de romance baseado no método Story Genius.">
+  <meta name="theme-color" content="#ffffff" id="meta-theme-color">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Aplica o tema antes da renderização para evitar "flash"
+    (function () {
+      try {
+        var saved = localStorage.getItem('sg-theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <!-- Ícones SVG reutilizáveis -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-new" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6M9 14h6"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M8 3v5h7V3"/><rect x="7" y="13" width="10" height="8"/></symbol>
+    <symbol id="i-load" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 17v-6M9 14l3-3 3 3"/></symbol>
+    <symbol id="i-theme" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></symbol>
+    <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7z"/><path d="M7 12h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+    <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8M14 5l-4 14"/></symbol>
+    <symbol id="i-heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+    <symbol id="i-ul" viewBox="0 0 24 24"><circle cx="5" cy="7" r="1" fill="currentColor"/><circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="5" cy="17" r="1" fill="currentColor"/><path d="M10 7h10M10 12h10M10 17h10"/></symbol>
+    <symbol id="i-ol" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10"/><path d="M4 6l1.5-1v4M4 15h2.5l-2.5 3h2.5"/></symbol>
+    <symbol id="i-clear" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="logo.svg" alt="Story Genius Scene Editor" class="logo" width="32" height="32">
+    </div>
+    <nav class="actions" aria-label="Ações principais">
+      <button type="button" id="btn-new" class="icon-btn" aria-label="Nova cena" title="Nova cena">
+        <svg class="ico"><use href="#i-new"/></svg>
+      </button>
+      <button type="button" id="btn-load" class="icon-btn" aria-label="Carregar cena" title="Carregar cena">
+        <svg class="ico"><use href="#i-load"/></svg>
+      </button>
+      <button type="button" id="btn-save" class="icon-btn" aria-label="Salvar cena" title="Salvar cena">
+        <svg class="ico"><use href="#i-save"/></svg>
+      </button>
+      <span class="divider" aria-hidden="true"></span>
+      <button type="button" id="btn-theme" class="icon-btn" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+        <svg class="ico"><use href="#i-theme"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="scene-title-wrap">
+      <input type="text" id="scene-title" class="scene-title" placeholder="Título da cena" aria-label="Título da cena" autocomplete="off">
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+
+    <form id="scene-form" autocomplete="off" onsubmit="return false">
+      <section class="pillar">
+        <label for="f-anchor"><span class="num">1</span> O Momento Gatilho <em>(The Anchor)</em></label>
+        <p class="hint">O que acontece logo no início que força o personagem a agir?</p>
+        <textarea id="f-anchor" data-field="anchor" rows="3"></textarea>
+      </section>
+
+      <section class="pillar">
+        <label for="f-misbelief"><span class="num">2</span> O Que o Personagem Pensa/Sente <em>(The Misbelief)</em></label>
+        <p class="hint">Qual crença equivocada ou dor do passado guia a reação dele agora?</p>
+        <textarea id="f-misbelief" data-field="misbelief" rows="3"></textarea>
+      </section>
+
+      <section class="pillar">
+        <label for="f-goal"><span class="num">3</span> O Objetivo Imediato <em>(What Do They Want?)</em></label>
+        <p class="hint">O que o personagem quer alcançar até o final desta cena?</p>
+        <textarea id="f-goal" data-field="goal" rows="3"></textarea>
+      </section>
+
+      <section class="pillar">
+        <label for="f-trouble"><span class="num">4</span> O Obstáculo/Conflito <em>(The Trouble)</em></label>
+        <p class="hint">O que impede o personagem de conseguir o que quer?</p>
+        <textarea id="f-trouble" data-field="trouble" rows="3"></textarea>
+      </section>
+
+      <section class="pillar">
+        <label for="f-shift"><span class="num">5</span> A Mudança/Revelação <em>(The Shift)</em></label>
+        <p class="hint">O que acontece no final que muda o estado emocional ou o entendimento do personagem? Qual o gancho para a próxima cena?</p>
+        <textarea id="f-shift" data-field="shift" rows="3"></textarea>
+      </section>
+
+      <section class="pillar prose">
+        <label id="prose-label"><span class="num">6</span> Texto Livre da Cena</label>
+        <div class="toolbar" role="toolbar" aria-label="Formatação de texto">
+          <button type="button" class="icon-btn small" data-cmd="bold" aria-label="Negrito" title="Negrito"><svg class="ico"><use href="#i-bold"/></svg></button>
+          <button type="button" class="icon-btn small" data-cmd="italic" aria-label="Itálico" title="Itálico"><svg class="ico"><use href="#i-italic"/></svg></button>
+          <button type="button" class="icon-btn small" data-cmd="heading" aria-label="Título" title="Título"><svg class="ico"><use href="#i-heading"/></svg></button>
+          <button type="button" class="icon-btn small" data-cmd="insertUnorderedList" aria-label="Lista com marcadores" title="Lista com marcadores"><svg class="ico"><use href="#i-ul"/></svg></button>
+          <button type="button" class="icon-btn small" data-cmd="insertOrderedList" aria-label="Lista numerada" title="Lista numerada"><svg class="ico"><use href="#i-ol"/></svg></button>
+          <button type="button" class="icon-btn small" data-cmd="removeFormat" aria-label="Limpar formatação" title="Limpar formatação"><svg class="ico"><use href="#i-clear"/></svg></button>
+        </div>
+        <div id="prose" class="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="prose-label" spellcheck="true"></div>
+      </section>
+    </form>
+  </main>
+
+  <input type="file" id="file-input" accept=".json,application/json" hidden>
+  <script src="app.js"></script>
+</body>
+</html>
