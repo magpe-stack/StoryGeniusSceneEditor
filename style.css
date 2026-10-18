@@ -1,0 +1,226 @@
+/* =========================================================
+   Story Genius Scene Editor — Design System monocromático
+   Preto #000000 / Branco #ffffff + cinzas só para bordas/estados
+   ========================================================= */
+
+:root {
+  --bg: #ffffff;
+  --fg: #000000;
+  --muted: #5c5c5c;
+  --border: #d4d4d4;
+  --hover: #f0f0f0;
+  --focus: #000000;
+  --radius: 6px;
+  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-prose: Georgia, "Times New Roman", Times, serif;
+}
+
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --fg: #ffffff;
+  --muted: #a3a3a3;
+  --border: #3a3a3a;
+  --hover: #1a1a1a;
+  --focus: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  transition: background .2s, color .2s;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---------- Barra superior ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand { display: flex; align-items: center; }
+.logo { display: block; width: 32px; height: 32px; }
+
+/* O logo é preto com detalhes brancos; no modo escuro é invertido */
+:root[data-theme="dark"] .logo { filter: invert(1); }
+
+.actions { display: flex; align-items: center; gap: 6px; }
+.divider { width: 1px; height: 24px; background: var(--border); margin: 0 6px; }
+
+/* ---------- Botões somente-ícone ---------- */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.icon-btn:hover { background: var(--hover); border-color: var(--border); }
+.icon-btn:active { background: var(--fg); color: var(--bg); }
+.icon-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.icon-btn.small { width: 36px; height: 36px; }
+.icon-btn.active { background: var(--fg); color: var(--bg); }
+
+.ico {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.icon-btn.small .ico { width: 18px; height: 18px; }
+
+/* ---------- Conteúdo ---------- */
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+}
+
+.scene-title-wrap { margin-bottom: 24px; }
+
+.scene-title {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--fg);
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font-prose);
+  font-size: 1.9rem;
+  font-weight: 700;
+  padding: 6px 0;
+  border-radius: 0;
+}
+.scene-title::placeholder { color: var(--muted); font-weight: 400; }
+.scene-title:focus { outline: none; border-bottom-color: var(--fg); background: var(--hover); }
+
+.status {
+  min-height: 1.4em;
+  margin: 6px 0 0;
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+/* ---------- Pilares ---------- */
+.pillar {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  transition: border-color .15s;
+}
+.pillar:focus-within { border-color: var(--fg); }
+
+.pillar > label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.pillar > label em { font-weight: 400; font-style: italic; color: var(--muted); }
+
+.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: .8rem;
+  font-weight: 700;
+  transform: translateY(-1px);
+}
+
+.hint { margin: 4px 0 10px 34px; font-size: .85rem; color: var(--muted); }
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 84px;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-family: var(--font-prose);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+textarea:focus, .editor:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* ---------- Editor de prosa ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 10px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.editor {
+  min-height: 320px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-prose);
+  font-size: 1.15rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.editor:empty::before {
+  content: "Escreva a cena aqui…";
+  color: var(--muted);
+  pointer-events: none;
+}
+.editor h2 { font-size: 1.4rem; margin: 1em 0 .4em; }
+.editor p, .editor div { margin: 0 0 .8em; }
+.editor ul, .editor ol { padding-left: 1.6em; }
+
+::selection { background: var(--fg); color: var(--bg); }
+
+@media (max-width: 480px) {
+  .icon-btn { width: 42px; height: 42px; }
+  .scene-title { font-size: 1.5rem; }
+  .pillar { padding: 12px; }
+}
+
+@media print {
+  .topbar, .toolbar { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
