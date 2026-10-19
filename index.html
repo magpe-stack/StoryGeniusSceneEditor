@@ -1,142 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scriptor</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0052CC">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Scriptor">
-    
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Story Genius Scene Editor</title>
+  <meta name="description" content="Planejamento e escrita de romances com o método Story Genius: fundação, psique do protagonista, enredo causal, cartões de cena e editor.">
+  <meta name="theme-color" content="#ffffff" id="meta-theme-color">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Aplica o tema antes da renderização para evitar "flash"
+    (function () {
+      try {
+        var saved = localStorage.getItem('sg-theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
-    <!-- Cabeçalho Principal -->
-    <header class="app-header">
-        <div class="brand-container">
-            <img src="logo.svg" alt="Logotipo Scriptor" class="app-logo" width="28" height="28">
-            <span class="app-title">Scriptor</span>
-        </div>
-        
-        <!-- Botão Intuitivo Claro/Escuro -->
-        <button id="theme-toggle" class="theme-toggle-btn" title="Alternar tema" aria-label="Alternar modo claro e escuro">
-            <svg id="theme-icon-sun" class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <svg id="theme-icon-moon" class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-        </button>
-    </header>
+  <!-- Sprite de ícones (traço, monocromático) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <!-- navegação -->
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="9" r="2"/><path d="M6 7v9"/><path d="M18 11v1a4 4 0 0 1-4 4H6"/><path d="M9 13l-3 3 3 3"/></symbol>
+    <symbol id="i-cards" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M7 3h10"/><path d="M7 11h10M7 15h6"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5a2.1 2.1 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></symbol>
+    <!-- ações globais e de ficha -->
+    <symbol id="i-new" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6M9 14h6"/></symbol>
+    <symbol id="i-load" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 17v-6M9 14l3-3 3 3"/></symbol>
+    <symbol id="i-backup" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 20h16"/></symbol>
+    <symbol id="i-txt" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 12h7M8.5 15h7M8.5 18h4"/></symbol>
+    <symbol id="i-json" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M10 12c-1 0-1.5.5-1.5 1.5S8 15 7.5 15c.5 0 1 .5 1 1.5S9 18 10 18M14 12c1 0 1.5.5 1.5 1.5S16 15 16.5 15c-.5 0-1 .5-1 1.5S15 18 14 18"/></symbol>
+    <symbol id="i-md" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15V9l2.5 3L12 9v6M16 9v6M14.5 13.5L16 15l1.5-1.5"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+    <!-- edição -->
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-chain" viewBox="0 0 24 24"><path d="M4 4v7a4 4 0 0 0 4 4h11"/><path d="M14 10l5 5-5 5"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
+    <symbol id="i-focus" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></symbol>
+    <!-- formatação -->
+    <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7z"/><path d="M7 12h7a3.5 3.5 0 0 1 0 7H7z"/></symbol>
+    <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8M14 5l-4 14"/></symbol>
+    <symbol id="i-heading" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M6 12h12"/></symbol>
+    <symbol id="i-ul" viewBox="0 0 24 24"><circle cx="5" cy="7" r="1" fill="currentColor"/><circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="5" cy="17" r="1" fill="currentColor"/><path d="M10 7h10M10 12h10M10 17h10"/></symbol>
+    <symbol id="i-ol" viewBox="0 0 24 24"><path d="M10 7h10M10 12h10M10 17h10"/><path d="M4 6l1.5-1v4M4 15h2.5l-2.5 3h2.5"/></symbol>
+    <symbol id="i-clear" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  </svg>
 
-    <!-- Área de Trabalho em 3 Blocos -->
-    <main class="app-workspace" id="workspace">
-        
-        <!-- Bloco Esquerdo: Barra Vertical + Subpainel Integrado -->
-        <aside class="panel panel-left" id="panel-left">
-            <div class="icon-bar">
-                <!-- 0. Novo Projeto -->
-                <button class="nav-icon-btn" id="btn-new-project" title="Novo Projeto" aria-label="Criar Novo Projeto">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="12" y1="11" x2="12" y2="17"></line>
-                        <line x1="9" y1="14" x2="15" y2="14"></line>
-                    </svg>
-                </button>
+  <header class="topbar">
+    <img src="logo.svg" alt="Story Genius Scene Editor" class="logo" width="32" height="32">
+    <input type="text" id="project-title" class="project-title" placeholder="Título do projeto" aria-label="Título do projeto" autocomplete="off">
+    <nav class="actions" aria-label="Ações do projeto">
+      <button type="button" class="icon-btn" data-act="new-project" title="Novo projeto (apaga o projeto atual deste navegador)" aria-label="Novo projeto (apaga o projeto atual deste navegador)"><svg class="ico"><use href="#i-new"/></svg></button>
+      <button type="button" class="icon-btn" data-act="load-project" title="Carregar backup do projeto (.json)" aria-label="Carregar backup do projeto (.json)"><svg class="ico"><use href="#i-load"/></svg></button>
+      <button type="button" class="icon-btn" data-act="backup" title="Baixar backup completo do projeto em JSON (Ctrl/Cmd + S)" aria-label="Baixar backup completo do projeto em JSON"><svg class="ico"><use href="#i-backup"/></svg></button>
+      <span class="divider" aria-hidden="true"></span>
+      <button type="button" class="icon-btn" data-act="export-md" title="Exportar livro completo / dossiê em Markdown (.md)" aria-label="Exportar livro completo / dossiê em Markdown (.md)"><svg class="ico"><use href="#i-md"/></svg></button>
+      <button type="button" class="icon-btn" data-act="export-txt" title="Exportar livro completo / dossiê em TXT" aria-label="Exportar livro completo / dossiê em TXT"><svg class="ico"><use href="#i-txt"/></svg></button>
+      <span class="divider" aria-hidden="true"></span>
+      <button type="button" class="icon-btn" data-act="theme" title="Alternar modo claro / escuro" aria-label="Alternar modo claro / escuro"><svg class="ico theme-moon"><use href="#i-moon"/></svg><svg class="ico theme-sun"><use href="#i-sun"/></svg></button>
+    </nav>
+  </header>
 
-                <div class="nav-divider"></div>
+  <div class="layout">
+    <nav class="rail" id="rail" aria-label="Navegação entre fases">
+      <button type="button" class="icon-btn" data-act="nav" data-view="dashboard" title="Dashboard" aria-label="Dashboard"><svg class="ico"><use href="#i-dash"/></svg></button>
+      <button type="button" class="icon-btn" data-act="nav" data-view="p1" title="Fase 1 · Fundação" aria-label="Fase 1 · Fundação"><svg class="ico"><use href="#i-spark"/></svg></button>
+      <button type="button" class="icon-btn" data-act="nav" data-view="p2" title="Fase 2 · Psique do Protagonista" aria-label="Fase 2 · Psique do Protagonista"><svg class="ico"><use href="#i-user"/></svg></button>
+      <button type="button" class="icon-btn" data-act="nav" data-view="p3" title="Fase 3 · Enredo Causal e Terceiro Trilho" aria-label="Fase 3 · Enredo Causal e Terceiro Trilho"><svg class="ico"><use href="#i-route"/></svg></button>
+      <button type="button" class="icon-btn" data-act="nav" data-view="p4" title="Fase 4 · Cartões de Cena" aria-label="Fase 4 · Cartões de Cena"><svg class="ico"><use href="#i-cards"/></svg></button>
+      <button type="button" class="icon-btn" data-act="nav" data-view="p5" title="Fase 5 · Roteiro (Roadmap)" aria-label="Fase 5 · Roteiro (Roadmap)"><svg class="ico"><use href="#i-flag"/></svg></button>
+      <span class="spacer"></span>
+      <button type="button" class="icon-btn" data-act="nav" data-view="editor" title="Editor de rascunho" aria-label="Editor de rascunho"><svg class="ico"><use href="#i-pen"/></svg></button>
+    </nav>
+    <main class="view" id="view" tabindex="-1"></main>
+  </div>
 
-                <!-- 1. Exportar -->
-                <button class="nav-icon-btn" data-target="submenu-export" title="Exportar projeto" aria-label="Exportar projeto">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="17 8 12 3 7 8"></polyline>
-                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                </button>
-
-                <!-- 2. Carregar -->
-                <button class="nav-icon-btn" data-target="submenu-import" title="Carregar arquivo" aria-label="Carregar arquivo">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                </button>
-
-                <div class="nav-divider"></div>
-
-                <!-- 3. Teoria -->
-                <button class="nav-icon-btn" data-target="submenu-theory" title="Teoria e Referências" aria-label="Teoria e Referências">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
-                        <path d="M6 6h10"></path>
-                        <path d="M6 10h10"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Subpainel de Conteúdo das Opções -->
-            <div class="sidebar-subpanel" id="sidebar-subpanel">
-                <div class="submenu-content" id="submenu-export">
-                    <span class="submenu-title">Exportar</span>
-                    <button class="submenu-item" data-action="export-json">Exportar JSON</button>
-                    <button class="submenu-item" data-action="export-md">Exportar MD</button>
-                    <button class="submenu-item" data-action="export-txt">Exportar TXT</button>
-                    <button class="submenu-item" data-action="export-docx">Exportar DOCX</button>
-                </div>
-
-                <div class="submenu-content" id="submenu-import">
-                    <span class="submenu-title">Carregar</span>
-                    <button class="submenu-item" data-action="import-json">Carregar JSON</button>
-                    <button class="submenu-item" data-action="import-md">Carregar MD</button>
-                    <button class="submenu-item" data-action="import-txt">Carregar TXT</button>
-                    <button class="submenu-item" data-action="import-docx">Carregar DOCX</button>
-                </div>
-
-                <div class="submenu-content" id="submenu-theory">
-                    <span class="submenu-title">Teoria</span>
-                    <button class="submenu-item" data-action="theory-portuguese">Português</button>
-                    <button class="submenu-item" data-action="theory-storygenius">Story Genius</button>
-                    <button class="submenu-item" data-action="theory-template">Template SG</button>
-                    <button class="submenu-item" data-action="theory-planning">Planejamento SG</button>
-                    <button class="submenu-item" data-action="theory-tips">Dicas</button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Bloco Central: Editor / Formulários / Cenas / Flashcards -->
-        <section class="panel panel-center" id="panel-center">
-            <div class="panel-placeholder" id="main-content">
-                <!-- Conteúdo dinâmico renderizado via app.js -->
-            </div>
-        </section>
-
-        <!-- Bloco Direito: Informações de Apoio -->
-        <aside class="panel panel-right" id="panel-right">
-            <div class="panel-placeholder"></div>
-        </aside>
-    </main>
-
-    <!-- Importação das Teorias e Dados Primeiro -->
-    <script src="data.js"></script>
-    <!-- Importação da Lógica do App em Segunda Instância -->
-    <script src="app.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="file-input" hidden>
+  <script src="app.js"></script>
 </body>
 </html>
